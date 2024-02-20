@@ -12,6 +12,9 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Pali Dictionary',
+      theme: ThemeData(
+        primarySwatch: Colors.blue,
+      ),
       home: FutureBuilder<void>(
         // Simulate some asynchronous initialization
         future: init(),
@@ -34,7 +37,7 @@ class MyApp extends StatelessWidget {
 }
 
 class MyHomePage extends StatefulWidget {
-  const MyHomePage({super.key});
+  const MyHomePage({Key? key}) : super(key: key);
 
   @override
   _MyHomePageState createState() => _MyHomePageState();
