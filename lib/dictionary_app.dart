@@ -1,11 +1,11 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart' show rootBundle;
+import 'package:flutter/services.dart' show ByteData, rootBundle;
 
 import 'search_results.dart';
 
-enum TranslationMode { englishToPali, paliToEnglish }
+enum TranslationMode { englishToPali, paliToEnglish, paliToVNese }
 
 class DictionaryApp extends StatefulWidget {
   @override
@@ -36,6 +36,10 @@ class _DictionaryAppState extends State<DictionaryApp> {
         'assets/pali-english_Ven_A_P_Buddhadatta-2.4.2.txt',
         TranslationMode.paliToEnglish,
       );
+      await loadDictionary(
+        'assets/conbimed_pali_vnese.txt',
+        TranslationMode.paliToVNese,
+      );
     } catch (e) {
       print('Error loading dictionary data: $e');
     }
@@ -43,9 +47,10 @@ class _DictionaryAppState extends State<DictionaryApp> {
 
   Future<void> loadDictionary(String assetPath, TranslationMode mode) async {
     try {
-      final String data = await rootBundle.loadString(assetPath);
+      final ByteData data = await rootBundle.load(assetPath);
+      final String content = utf8.decode(data.buffer.asUint8List());
 
-      List<String> lines = LineSplitter.split(data).toList();
+      List<String> lines = LineSplitter.split(content).toList();
       List<Map<String, String>> entries = [];
 
       String currentEntry = '';
@@ -96,6 +101,24 @@ class _DictionaryAppState extends State<DictionaryApp> {
     // Combine exact and close matches, placing exact matches first
     final List<Map<String, String>> result = [...exactMatches, ...closeMatches];
 
+    // If result is empty and current mode is TranslationMode.paliToVNese, perform additional search
+    if (result.isNotEmpty) {
+      return result;
+    }
+    final List<Map<String, String>> additionalSearch =
+        dictionaryData[TranslationMode.paliToVNese] ?? [];
+
+    // Apply the same search logic to the additional data
+    final List<Map<String, String>> additionalMatches = additionalSearch
+        .where((entry) =>
+            entry['word']?.toLowerCase() == lowercasedQuery ||
+            entry['meaning']?.toLowerCase() == lowercasedQuery ||
+            entry['word']?.toLowerCase().contains(lowercasedQuery) == true ||
+            entry['meaning']?.toLowerCase().contains(lowercasedQuery) == true)
+        .toList();
+
+    // Add the additional matches to the result
+    result.addAll(additionalMatches);
     return result;
   }
 
@@ -121,6 +144,9 @@ class _DictionaryAppState extends State<DictionaryApp> {
                     onChanged: (mode) {
                       setState(() {
                         currentMode = mode!;
+                        currentSearchQuery = '';
+                        searchResults = [];
+                        selectedWord = {};
                       });
                     },
                     items: TranslationMode.values.map((mode) {
@@ -181,10 +207,24 @@ class _DictionaryAppState extends State<DictionaryApp> {
                       hintStyle: TextStyle(
                         color: Colors.black87,
                       ),
-                      suffixIcon: Icon(
-                        Icons.search,
-                        color: Colors.black,
-                      ),
+                      suffixIcon: currentSearchQuery.isNotEmpty
+                          ? IconButton(
+                              icon: Icon(
+                                Icons.close,
+                                color: Colors.black,
+                              ),
+                              onPressed: () {
+                                setState(() {
+                                  currentSearchQuery = '';
+                                  searchResults = [];
+                                  selectedWord = {};
+                                });
+                              },
+                            )
+                          : Icon(
+                              Icons.search,
+                              color: Colors.black,
+                            ),
                       focusedBorder: OutlineInputBorder(
                         borderSide: BorderSide(
                           color: Colors.blue,
@@ -217,6 +257,11 @@ class _DictionaryAppState extends State<DictionaryApp> {
                         child: WordDetailsWidget(
                           word: selectedWord['word'] ?? '',
                           meaning: selectedWord['meaning'] ?? '',
+                          onClose: () {
+                            setState(() {
+                              selectedWord = {};
+                            });
+                          },
                         ),
                       ),
                     if (searchResults.isNotEmpty)
@@ -245,9 +290,14 @@ class _DictionaryAppState extends State<DictionaryApp> {
 class WordDetailsWidget extends StatelessWidget {
   final String word;
   final String meaning;
+  final VoidCallback onClose;
 
-  const WordDetailsWidget({Key? key, required this.word, required this.meaning})
-      : super(key: key);
+  const WordDetailsWidget({
+    Key? key,
+    required this.word,
+    required this.meaning,
+    required this.onClose,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -258,9 +308,21 @@ class WordDetailsWidget extends StatelessWidget {
           color: Colors.lightGreen,
           child: Padding(
             padding: const EdgeInsets.all(8.0),
-            child: SelectableText(
-              '$word',
-              style: TextStyle(color: Colors.white),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                SelectableText(
+                  '$word',
+                  style: TextStyle(color: Colors.white),
+                ),
+                IconButton(
+                  onPressed: onClose,
+                  icon: Icon(
+                    Icons.close,
+                    color: Colors.white,
+                  ),
+                ),
+              ],
             ),
           ),
         ),
@@ -278,4 +340,10 @@ class WordDetailsWidget extends StatelessWidget {
       ],
     );
   }
+}
+
+void main() {
+  runApp(MaterialApp(
+    home: DictionaryApp(),
+  ));
 }
