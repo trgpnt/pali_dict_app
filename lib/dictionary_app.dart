@@ -1,6 +1,5 @@
 import 'dart:convert';
 
-import 'package:dict_app/word_details_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show rootBundle;
 
@@ -103,7 +102,7 @@ class _DictionaryAppState extends State<DictionaryApp> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: Colors.yellow, // Set the background color to yellow
+      color: Colors.yellow,
       child: Scaffold(
         appBar: AppBar(
           title: const Text('Pali Dictionary'),
@@ -115,7 +114,7 @@ class _DictionaryAppState extends State<DictionaryApp> {
               Column(
                 children: [
                   SizedBox(
-                    height: 16.0, // Adjust the height as needed
+                    height: 16.0,
                   ),
                   DropdownButtonFormField<TranslationMode>(
                     value: currentMode,
@@ -132,7 +131,7 @@ class _DictionaryAppState extends State<DictionaryApp> {
                               ? 'Pali to English'
                               : 'English to Pali',
                           style: TextStyle(
-                            color: Colors.black87, // Dropdown text color
+                            color: Colors.black87,
                           ),
                         ),
                       );
@@ -145,14 +144,14 @@ class _DictionaryAppState extends State<DictionaryApp> {
                       ),
                       focusedBorder: OutlineInputBorder(
                         borderSide: BorderSide(
-                          color: Colors.blue, // Focused border color
+                          color: Colors.blue,
                           width: 2.0,
                         ),
                         borderRadius: BorderRadius.circular(12.0),
                       ),
                       enabledBorder: OutlineInputBorder(
                         borderSide: BorderSide(
-                          color: Colors.grey, // Enabled border color
+                          color: Colors.grey,
                           width: 1.0,
                         ),
                         borderRadius: BorderRadius.circular(12.0),
@@ -160,47 +159,45 @@ class _DictionaryAppState extends State<DictionaryApp> {
                     ),
                   ),
                   SizedBox(
-                    height: 16.0, // Adjust the height as needed
+                    height: 16.0,
                   ),
                   TextField(
                     onChanged: (query) {
                       setState(() {
-                        // Update search results when the user types
                         searchResults = searchDictionary(query);
                         currentSearchQuery = query;
+                        selectedWord = {};
                       });
                     },
                     style: TextStyle(
-                      color: Colors.black, // Text color
-                      fontSize: 18.0, // Text size
+                      color: Colors.black,
+                      fontSize: 18.0,
                     ),
-                    cursorColor: Colors.black, // Cursor color
+                    cursorColor: Colors.black,
                     decoration: InputDecoration(
                       hintText: currentMode == TranslationMode.englishToPali
                           ? 'Search English Word'
                           : 'Search Pali Word',
                       hintStyle: TextStyle(
-                        color: Colors.black87, // Placeholder text color
+                        color: Colors.black87,
                       ),
                       suffixIcon: Icon(
                         Icons.search,
-                        color: Colors.black, // Search icon color
+                        color: Colors.black,
                       ),
                       focusedBorder: OutlineInputBorder(
                         borderSide: BorderSide(
-                          color: Colors.blue, // Focused border color
+                          color: Colors.blue,
                           width: 2.0,
                         ),
-                        borderRadius:
-                            BorderRadius.circular(12.0), // Border radius
+                        borderRadius: BorderRadius.circular(12.0),
                       ),
                       enabledBorder: OutlineInputBorder(
                         borderSide: BorderSide(
-                          color: Colors.grey, // Enabled border color
+                          color: Colors.grey,
                           width: 1.0,
                         ),
-                        borderRadius:
-                            BorderRadius.circular(12.0), // Border radius
+                        borderRadius: BorderRadius.circular(12.0),
                       ),
                     ),
                   ),
@@ -208,27 +205,77 @@ class _DictionaryAppState extends State<DictionaryApp> {
               ),
               SizedBox(height: 16),
               Expanded(
-                child: SearchResults(
-                  searchResults: searchResults,
-                  // Pass a callback to handle tap events
-                  onTap: (wordDetails) {
-                    // Navigate to the details screen
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => WordDetailsScreen(
-                          wordDetails: wordDetails,
-                          searchQuery: currentSearchQuery,
+                child: Column(
+                  children: [
+                    if (selectedWord.isNotEmpty)
+                      Container(
+                        padding: EdgeInsets.all(16.0),
+                        decoration: BoxDecoration(
+                          color: Colors.grey.shade200,
+                          borderRadius: BorderRadius.circular(12.0),
+                        ),
+                        child: WordDetailsWidget(
+                          word: selectedWord['word'] ?? '',
+                          meaning: selectedWord['meaning'] ?? '',
                         ),
                       ),
-                    );
-                  },
+                    if (searchResults.isNotEmpty)
+                      Expanded(
+                        child: SearchResults(
+                          searchResults: searchResults,
+                          onTap: (wordDetails) {
+                            setState(() {
+                              selectedWord = wordDetails as Map<String, String>;
+                              searchResults = [];
+                            });
+                          },
+                        ),
+                      ),
+                  ],
                 ),
               ),
             ],
           ),
         ),
       ),
+    );
+  }
+}
+
+class WordDetailsWidget extends StatelessWidget {
+  final String word;
+  final String meaning;
+
+  const WordDetailsWidget({Key? key, required this.word, required this.meaning})
+      : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Container(
+          color: Colors.lightGreen,
+          child: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: SelectableText(
+              '$word',
+              style: TextStyle(color: Colors.white),
+            ),
+          ),
+        ),
+        const SizedBox(height: 16),
+        Container(
+          color: Colors.yellow,
+          child: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: SelectableText(
+              'Meaning: $meaning',
+              style: const TextStyle(color: Colors.black),
+            ),
+          ),
+        ),
+      ],
     );
   }
 }

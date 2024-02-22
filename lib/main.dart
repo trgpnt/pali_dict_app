@@ -11,10 +11,6 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Pali Dictionary',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-      ),
       home: FutureBuilder<void>(
         // Simulate some asynchronous initialization
         future: init(),
@@ -32,7 +28,7 @@ class MyApp extends StatelessWidget {
   Future<void> init() async {
     // Perform your initialization tasks here
     // This could be loading data, setting up services, etc.
-    await Future.delayed(const Duration(seconds: 2)); // Simulating a delay
+    await Future.delayed(const Duration(seconds: 1)); // Simulating a delay
   }
 }
 
@@ -44,16 +40,31 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  // Your existing code for the dictionary app here...
-
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Pali Dictionary',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
+      home: Scaffold(
+        appBar: AppBar(
+          backgroundColor: Colors.yellow.shade200, // Yellow shade
+          title: Container(
+            padding: const EdgeInsets.all(8.0), // Padding around the text
+            decoration: BoxDecoration(
+              color: const Color(0xFFFF963B),
+              // Same color as AppBar background
+              borderRadius: BorderRadius.circular(8.0), // Rounded corners
+            ),
+            child: const Text(
+              'Pali Dictionary',
+              style: TextStyle(
+                fontSize: 20.0,
+                fontWeight: FontWeight.bold,
+                color: Colors.brown, // Text color
+              ),
+            ),
+          ),
+        ),
+        body: DictionaryApp(),
       ),
-      home: DictionaryApp(),
     );
   }
 }

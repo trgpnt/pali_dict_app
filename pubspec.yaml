@@ -93,5 +93,4 @@ flutter:
     - assets/english-pali_Ven_A_P_Buddhadatta-2.4.2.txt
     - assets/pali-english_Ven_A_P_Buddhadatta-2.4.2.txt
     - assets/loading.gif
-webdev:
-  port: 50330
+    - assets/conbimed_pali_vnese.txt
