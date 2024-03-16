@@ -16,9 +16,9 @@ class MyApp extends StatelessWidget {
         future: init(),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.done) {
-            return MyHomePage(); // Transition to the main page
+            return const MyHomePage(); // Transition to the main page
           } else {
-            return LoadingScreen(); // Show the loading screen while initializing
+            return const LoadingScreen(); // Show the loading screen while initializing
           }
         },
       ),

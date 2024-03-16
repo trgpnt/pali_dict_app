@@ -11,7 +11,6 @@ class LoadingScreen extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Image.asset('assets/loading.gif', width: 150, height: 150),
-            // Replace with your cat image
             const SizedBox(height: 16),
             const CircularProgressIndicator(),
           ],
