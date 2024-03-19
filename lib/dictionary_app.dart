@@ -1,4 +1,5 @@
 import 'package:dict_app/service_layer/dictionary_read_service.dart';
+import 'package:dict_app/word_details_widget.dart';
 import 'package:flutter/material.dart';
 
 import 'search_results.dart';
@@ -6,6 +7,8 @@ import 'search_results.dart';
 enum TranslationMode { englishToPali, paliToEnglish, paliToVNese }
 
 class DictionaryApp extends StatefulWidget {
+  const DictionaryApp({super.key});
+
   @override
   _DictionaryAppState createState() => _DictionaryAppState();
 }
@@ -97,7 +100,7 @@ class _DictionaryAppState extends State<DictionaryApp> {
             children: [
               Column(
                 children: [
-                  SizedBox(
+                  const SizedBox(
                     height: 16.0,
                   ),
                   DropdownButtonFormField<TranslationMode>(
@@ -121,7 +124,7 @@ class _DictionaryAppState extends State<DictionaryApp> {
                           mode == TranslationMode.paliToEnglish
                               ? 'Pali to English / Vietnamese'
                               : 'English to Pali',
-                          style: TextStyle(
+                          style: const TextStyle(
                             color: Colors.black87,
                           ),
                         ),
@@ -129,19 +132,19 @@ class _DictionaryAppState extends State<DictionaryApp> {
                     }).toList(),
                     decoration: InputDecoration(
                       labelText: 'Translation Mode',
-                      labelStyle: TextStyle(color: Colors.red),
+                      labelStyle: const TextStyle(color: Colors.red),
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(12.0),
                       ),
                       focusedBorder: OutlineInputBorder(
-                        borderSide: BorderSide(
+                        borderSide: const BorderSide(
                           color: Colors.blue,
                           width: 2.0,
                         ),
                         borderRadius: BorderRadius.circular(12.0),
                       ),
                       enabledBorder: OutlineInputBorder(
-                        borderSide: BorderSide(
+                        borderSide: const BorderSide(
                           color: Colors.grey,
                           width: 1.0,
                         ),
@@ -149,7 +152,7 @@ class _DictionaryAppState extends State<DictionaryApp> {
                       ),
                     ),
                   ),
-                  SizedBox(
+                  const SizedBox(
                     height: 16.0,
                   ),
                   TextField(
@@ -160,7 +163,7 @@ class _DictionaryAppState extends State<DictionaryApp> {
                         selectedWord = {};
                       });
                     },
-                    style: TextStyle(
+                    style: const TextStyle(
                       color: Colors.black,
                       fontSize: 18.0,
                     ),
@@ -169,12 +172,12 @@ class _DictionaryAppState extends State<DictionaryApp> {
                       hintText: currentMode == TranslationMode.englishToPali
                           ? 'Search English Word'
                           : 'Search Pali Word',
-                      hintStyle: TextStyle(
+                      hintStyle: const TextStyle(
                         color: Colors.black87,
                       ),
                       suffixIcon: currentSearchQuery.isNotEmpty
                           ? IconButton(
-                              icon: Icon(
+                              icon: const Icon(
                                 Icons.close,
                                 color: Colors.black,
                               ),
@@ -186,19 +189,19 @@ class _DictionaryAppState extends State<DictionaryApp> {
                                 });
                               },
                             )
-                          : Icon(
+                          : const Icon(
                               Icons.search,
                               color: Colors.black,
                             ),
                       focusedBorder: OutlineInputBorder(
-                        borderSide: BorderSide(
+                        borderSide: const BorderSide(
                           color: Colors.blue,
                           width: 2.0,
                         ),
                         borderRadius: BorderRadius.circular(12.0),
                       ),
                       enabledBorder: OutlineInputBorder(
-                        borderSide: BorderSide(
+                        borderSide: const BorderSide(
                           color: Colors.grey,
                           width: 1.0,
                         ),
@@ -208,13 +211,13 @@ class _DictionaryAppState extends State<DictionaryApp> {
                   ),
                 ],
               ),
-              SizedBox(height: 16),
+              const SizedBox(height: 16),
               Expanded(
                 child: Column(
                   children: [
                     if (selectedWord.isNotEmpty)
                       Container(
-                        padding: EdgeInsets.all(16.0),
+                        padding: const EdgeInsets.all(16.0),
                         decoration: BoxDecoration(
                           color: Colors.grey.shade200,
                           borderRadius: BorderRadius.circular(12.0),
@@ -235,7 +238,7 @@ class _DictionaryAppState extends State<DictionaryApp> {
                           searchResults: searchResults,
                           onTap: (wordDetails) {
                             setState(() {
-                              selectedWord = wordDetails as Map<String, String>;
+                              selectedWord = wordDetails;
                               searchResults = [];
                             });
                           },
@@ -248,61 +251,6 @@ class _DictionaryAppState extends State<DictionaryApp> {
           ),
         ),
       ),
-    );
-  }
-}
-
-class WordDetailsWidget extends StatelessWidget {
-  final String word;
-  final String meaning;
-  final VoidCallback onClose;
-
-  const WordDetailsWidget({
-    Key? key,
-    required this.word,
-    required this.meaning,
-    required this.onClose,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Container(
-          color: Colors.lightGreen,
-          child: Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                SelectableText(
-                  '$word',
-                  style: TextStyle(color: Colors.white),
-                ),
-                IconButton(
-                  onPressed: onClose,
-                  icon: Icon(
-                    Icons.close,
-                    color: Colors.white,
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ),
-        const SizedBox(height: 16),
-        Container(
-          color: Colors.yellow,
-          child: Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: SelectableText(
-              'Meaning: $meaning',
-              style: const TextStyle(color: Colors.black),
-            ),
-          ),
-        ),
-      ],
     );
   }
 }
