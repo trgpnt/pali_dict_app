@@ -27,6 +27,7 @@ class _DictionaryAppState extends State<DictionaryApp> {
 
   Future<void> loadDictionaryData() async {
     try {
+      Stopwatch stopwatch = Stopwatch()..start();
       dictionaryData[TranslationMode.englishToPali] =
           await _dictionaryReadService.loadDictionary(
               'assets/english-pali_Ven_A_P_Buddhadatta-2.4.2.txt');
@@ -35,6 +36,8 @@ class _DictionaryAppState extends State<DictionaryApp> {
               'assets/pali-english_Ven_A_P_Buddhadatta-2.4.2.txt');
       dictionaryData[TranslationMode.paliToVNese] = await _dictionaryReadService
           .loadDictionary('assets/conbimed_pali_vnese.txt');
+      print(
+          'Finished loading in ${stopwatch.elapsed.inMilliseconds} miliseconds');
     } catch (e) {
       print('Error loading dictionary data: $e');
     }

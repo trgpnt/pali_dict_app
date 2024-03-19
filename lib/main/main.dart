@@ -1,24 +1,26 @@
 import 'package:flutter/material.dart';
 
-import 'dictionary_app.dart';
-import 'loading_screen.dart';
+import '../dictionary_app.dart';
+import '../loading_screen.dart';
 
 void main() {
   runApp(MyApp());
 }
 
 class MyApp extends StatelessWidget {
+  static const int waitingOnMilisec = 3000;
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       home: FutureBuilder<void>(
-        // Simulate some asynchronous initialization
         future: init(),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.done) {
-            return const MyHomePage(); // Transition to the main page
+            return const DictionaryHomePage(); // Transition to the main page
           } else {
-            return const LoadingScreen(); // Show the loading screen while initializing
+            return const InitialLoadingScreen(); // Show the loading screen while initializing
           }
         },
       ),
@@ -28,21 +30,25 @@ class MyApp extends StatelessWidget {
   Future<void> init() async {
     // Perform your initialization tasks here
     // This could be loading data, setting up services, etc.
-    await Future.delayed(const Duration(seconds: 1)); // Simulating a delay
+    await Future.delayed(
+        const Duration(milliseconds: waitingOnMilisec)); // Simulating a delay
   }
 }
 
-class MyHomePage extends StatefulWidget {
-  const MyHomePage({Key? key}) : super(key: key);
+class DictionaryHomePage extends StatefulWidget {
+  const DictionaryHomePage({super.key});
 
   @override
-  _MyHomePageState createState() => _MyHomePageState();
+  _DictionaryHomePageState createState() => _DictionaryHomePageState();
 }
 
-class _MyHomePageState extends State<MyHomePage> {
+class _DictionaryHomePageState extends State<DictionaryHomePage> {
+  static const HOME_PAGE_TITLE = "PALI DICTIONARY";
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       home: Scaffold(
         appBar: AppBar(
           backgroundColor: Colors.yellow.shade200, // Yellow shade
@@ -54,7 +60,7 @@ class _MyHomePageState extends State<MyHomePage> {
               borderRadius: BorderRadius.circular(8.0), // Rounded corners
             ),
             child: const Text(
-              'Pali Dictionary',
+              HOME_PAGE_TITLE,
               style: TextStyle(
                 fontSize: 20.0,
                 fontWeight: FontWeight.bold,
