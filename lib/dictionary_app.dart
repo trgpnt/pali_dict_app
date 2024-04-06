@@ -1,4 +1,4 @@
-import 'package:dict_app/service_layer/dictionary_read_service.dart';
+import 'package:dict_app/service_layer/dictionary_load_service.dart';
 import 'package:dict_app/widget/word_details_widget.dart';
 import 'package:flutter/material.dart';
 
@@ -19,7 +19,7 @@ class _DictionaryAppState extends State<DictionaryApp> {
   TranslationMode currentMode = TranslationMode.paliToEnglish;
   Map<String, String> selectedWord = {};
   String currentSearchQuery = '';
-  final DictionaryReadService _dictionaryReadService = DictionaryReadService();
+  final DictionaryLoadService _dictionaryReadService = DictionaryLoadService();
 
   @override
   void initState() {
@@ -60,42 +60,26 @@ class _DictionaryAppState extends State<DictionaryApp> {
     final List<Map<String, String>> allEntries =
         dictionaryData[currentMode] ?? [];
 
-    // Find exact matches
-    final List<Map<String, String>> exactMatches = allEntries
+    List<Map<String, String>> matchingEntries = allEntries
         .where((entry) =>
-            entry['word']?.toLowerCase() == lowercasedQuery ||
-            entry['meaning']?.toLowerCase() == lowercasedQuery)
+            entry['word']?.toLowerCase().startsWith(lowercasedQuery) == true)
         .toList();
 
-    // Find close matches (entries that contain the query)
-    final List<Map<String, String>> closeMatches = allEntries
-        .where((entry) =>
-            entry['word']?.toLowerCase().contains(lowercasedQuery) == true ||
-            entry['meaning']?.toLowerCase().contains(lowercasedQuery) == true)
-        .toList();
-
-    // Combine exact and close matches, placing exact matches first
-    final List<Map<String, String>> result = [...exactMatches, ...closeMatches];
-
-    // If result is empty and current mode is TranslationMode.paliToVNese, perform additional search
-    if (result.isNotEmpty) {
-      return result;
+    if (matchingEntries.isNotEmpty ||
+        currentMode != TranslationMode.paliToVNese) {
+      return matchingEntries;
     }
+
+    // If no results found and current mode is paliToVNese, perform additional search
     final List<Map<String, String>> additionalSearch =
         dictionaryData[TranslationMode.paliToVNese] ?? [];
 
-    // Apply the same search logic to the additional data
-    final List<Map<String, String>> additionalMatches = additionalSearch
+    List<Map<String, String>> additionalMatches = additionalSearch
         .where((entry) =>
-            entry['word']?.toLowerCase() == lowercasedQuery ||
-            entry['meaning']?.toLowerCase() == lowercasedQuery ||
-            entry['word']?.toLowerCase().contains(lowercasedQuery) == true ||
-            entry['meaning']?.toLowerCase().contains(lowercasedQuery) == true)
+            entry['word']?.toLowerCase().startsWith(lowercasedQuery) == true)
         .toList();
 
-    // Add the additional matches to the result
-    result.addAll(additionalMatches);
-    return result;
+    return additionalMatches;
   }
 
   @override

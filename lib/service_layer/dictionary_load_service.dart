@@ -1,17 +1,17 @@
-// dictionary_read_service.dart
+// dictionary_load_service.dart
 import 'dart:convert';
 
 import 'package:flutter/services.dart' show ByteData, rootBundle;
 
-class DictionaryReadService {
+class DictionaryLoadService {
   // Private constructor
-  DictionaryReadService._();
+  DictionaryLoadService._();
 
   // Singleton instance
-  static final DictionaryReadService _instance = DictionaryReadService._();
+  static final DictionaryLoadService _instance = DictionaryLoadService._();
 
   // Getter for the instance
-  factory DictionaryReadService() {
+  factory DictionaryLoadService() {
     return _instance;
   }
 
