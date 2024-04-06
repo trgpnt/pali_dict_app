@@ -20,12 +20,27 @@ class _DictionaryAppState extends State<DictionaryApp> {
   Map<String, String> selectedWord = {};
   String currentSearchQuery = '';
   final DictionaryLoadService _dictionaryReadService = DictionaryLoadService();
+  final TextEditingController _searchController = TextEditingController();
 
   @override
   void initState() {
     super.initState();
     // Load dictionary data when the app starts
     loadDictionaryData();
+    // Add listener to search controller
+    _searchController.addListener(() {
+      setState(() {
+        currentSearchQuery = _searchController.text;
+        searchResults = searchDictionary(currentSearchQuery);
+        selectedWord = {};
+      });
+    });
+  }
+
+  @override
+  void dispose() {
+    _searchController.dispose();
+    super.dispose();
   }
 
   Future<void> loadDictionaryData() async {
@@ -149,13 +164,14 @@ class _DictionaryAppState extends State<DictionaryApp> {
                    * Search input field
                    */
                   TextField(
-                    onChanged: (query) {
-                      setState(() {
-                        searchResults = searchDictionary(query);
-                        currentSearchQuery = query;
-                        selectedWord = {};
-                      });
-                    },
+                    // onChanged: (query) {
+                    //   setState(() {
+                    //     searchResults = searchDictionary(query);
+                    //     currentSearchQuery = query;
+                    //     selectedWord = {};
+                    //   });
+                    // },
+                    controller: _searchController,
                     style: const TextStyle(
                       color: Colors.black,
                       fontSize: 18.0,
@@ -175,7 +191,8 @@ class _DictionaryAppState extends State<DictionaryApp> {
                               ),
                               onPressed: () {
                                 setState(() {
-                                  currentSearchQuery = '\\';
+                                  _searchController.clear();
+                                  currentSearchQuery = '';
                                   searchResults = [];
                                   selectedWord = {};
                                 });
@@ -220,7 +237,7 @@ class _DictionaryAppState extends State<DictionaryApp> {
                           onClose: () {
                             setState(() {
                               selectedWord = {};
-                              currentSearchQuery = '';
+                              _searchController.clear();
                             });
                           },
                         ),
@@ -231,6 +248,7 @@ class _DictionaryAppState extends State<DictionaryApp> {
                           searchResults: searchResults,
                           onTap: (wordDetails) {
                             setState(() {
+                              _searchController.clear();
                               selectedWord = wordDetails;
                               searchResults = [];
                             });
