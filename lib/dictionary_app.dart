@@ -82,6 +82,9 @@ class _DictionaryAppState extends State<DictionaryApp> {
 
     if (matchingEntries.isNotEmpty &&
         currentMode != TranslationMode.paliToVNese) {
+      matchingEntries
+          .sort((a, b) => a['word']!.length.compareTo(b['word']!.length));
+
       return matchingEntries;
     }
 
@@ -93,6 +96,8 @@ class _DictionaryAppState extends State<DictionaryApp> {
         .where((entry) =>
             entry['word']?.toLowerCase().startsWith(lowercasedQuery) == true)
         .toList();
+    additionalMatches
+        .sort((a, b) => a['word']!.length.compareTo(b['word']!.length));
 
     return additionalMatches;
   }
