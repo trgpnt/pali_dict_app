@@ -99,9 +99,6 @@ class _DictionaryAppState extends State<DictionaryApp> {
             children: [
               Column(
                 children: [
-                  const SizedBox(
-                    height: 16.0,
-                  ),
                   DropdownButtonFormField<TranslationMode>(
                     value: currentMode,
                     onChanged: (mode) {
@@ -153,9 +150,8 @@ class _DictionaryAppState extends State<DictionaryApp> {
                       );
                     }).toList(),
                   ),
-                  const SizedBox(
-                    height: 16.0,
-                  ),
+                  const SizedBox(height: 24),
+                  // Add some space between the dropdown and text field
                   /**
                    * Search input field
                    */
@@ -174,10 +170,10 @@ class _DictionaryAppState extends State<DictionaryApp> {
                     cursorColor: Colors.black,
                     decoration: InputDecoration(
                       hintText: currentMode == TranslationMode.englishToPali
-                          ? 'Search English Word'
-                          : 'Search Pali Word',
+                          ? 'Enter English word'
+                          : 'Enter Pali word',
                       hintStyle:
-                          const TextStyle(color: Colors.black87, fontSize: 25),
+                          const TextStyle(color: Colors.black87, fontSize: 20),
                       suffixIcon: currentSearchQuery.isNotEmpty
                           ? IconButton(
                               icon: const Icon(
@@ -186,7 +182,7 @@ class _DictionaryAppState extends State<DictionaryApp> {
                               ),
                               onPressed: () {
                                 setState(() {
-                                  currentSearchQuery = '';
+                                  currentSearchQuery = '\\';
                                   searchResults = [];
                                   selectedWord = {};
                                 });
@@ -231,6 +227,7 @@ class _DictionaryAppState extends State<DictionaryApp> {
                           onClose: () {
                             setState(() {
                               selectedWord = {};
+                              currentSearchQuery = '';
                             });
                           },
                         ),
