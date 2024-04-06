@@ -113,8 +113,11 @@ class _DictionaryAppState extends State<DictionaryApp> {
                       });
                     },
                     decoration: InputDecoration(
-                      labelText: 'Translation Mode',
-                      labelStyle: const TextStyle(color: Colors.red),
+                      labelText: 'Translation Direction',
+                      labelStyle: const TextStyle(
+                          color: Color(0xFF00838F),
+                          decorationThickness: 10.0,
+                          fontSize: 25),
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(12.0),
                       ),
@@ -130,7 +133,7 @@ class _DictionaryAppState extends State<DictionaryApp> {
                           color: Colors.grey,
                           width: 1.0,
                         ),
-                        borderRadius: BorderRadius.circular(12.0),
+                        borderRadius: BorderRadius.circular(16.0),
                       ),
                     ),
                     items: TranslationMode.values
@@ -145,8 +148,7 @@ class _DictionaryAppState extends State<DictionaryApp> {
                               ? 'Pali to English / Vietnamese'
                               : 'English to Pali',
                           style: const TextStyle(
-                            color: Colors.black87,
-                          ),
+                              color: Colors.black87, fontSize: 20),
                         ),
                       );
                     }).toList(),
@@ -154,6 +156,9 @@ class _DictionaryAppState extends State<DictionaryApp> {
                   const SizedBox(
                     height: 16.0,
                   ),
+                  /**
+                   * Search input field
+                   */
                   TextField(
                     onChanged: (query) {
                       setState(() {
@@ -171,9 +176,8 @@ class _DictionaryAppState extends State<DictionaryApp> {
                       hintText: currentMode == TranslationMode.englishToPali
                           ? 'Search English Word'
                           : 'Search Pali Word',
-                      hintStyle: const TextStyle(
-                        color: Colors.black87,
-                      ),
+                      hintStyle:
+                          const TextStyle(color: Colors.black87, fontSize: 25),
                       suffixIcon: currentSearchQuery.isNotEmpty
                           ? IconButton(
                               icon: const Icon(

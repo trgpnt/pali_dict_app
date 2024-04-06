@@ -48,11 +48,11 @@ class _DictionaryHomePageState extends State<DictionaryHomePage> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      theme: ThemeData(scaffoldBackgroundColor: Colors.yellow.shade200),
+      theme: ThemeData(scaffoldBackgroundColor: Colors.yellow.shade50),
       debugShowCheckedModeBanner: false,
       home: Scaffold(
         appBar: AppBar(
-          backgroundColor: Colors.yellow.shade200, // Yellow shade
+          backgroundColor: Colors.yellow.shade50, // Yellow shade
           title: Container(
             padding: const EdgeInsets.all(8.0), // Padding around the text
             decoration: BoxDecoration(
@@ -65,7 +65,7 @@ class _DictionaryHomePageState extends State<DictionaryHomePage> {
               style: TextStyle(
                 fontSize: 20.0,
                 fontWeight: FontWeight.bold,
-                color: Colors.brown, // Text color
+                color: Colors.yellow, // Text color
               ),
             ),
           ),
