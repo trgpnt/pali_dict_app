@@ -26,7 +26,7 @@ class WordDetailsWidget extends StatelessWidget {
               children: [
                 SelectableText(
                   '$word',
-                  style: const TextStyle(color: Colors.white),
+                  style: const TextStyle(color: Colors.white, fontSize: 20),
                 ),
                 IconButton(
                   onPressed: onClose,
@@ -46,7 +46,7 @@ class WordDetailsWidget extends StatelessWidget {
             padding: const EdgeInsets.all(8.0),
             child: SelectableText(
               'Meaning: $meaning',
-              style: const TextStyle(color: Colors.black),
+              style: const TextStyle(color: Colors.black, fontSize: 20),
             ),
           ),
         ),

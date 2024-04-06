@@ -80,7 +80,7 @@ class _DictionaryAppState extends State<DictionaryApp> {
             entry['word']?.toLowerCase().startsWith(lowercasedQuery) == true)
         .toList();
 
-    if (matchingEntries.isNotEmpty ||
+    if (matchingEntries.isNotEmpty &&
         currentMode != TranslationMode.paliToVNese) {
       return matchingEntries;
     }
@@ -111,6 +111,7 @@ class _DictionaryAppState extends State<DictionaryApp> {
                     value: currentMode,
                     onChanged: (mode) {
                       setState(() {
+                        _searchController.clear();
                         currentMode = mode!;
                         currentSearchQuery = '';
                         searchResults = [];
@@ -164,13 +165,6 @@ class _DictionaryAppState extends State<DictionaryApp> {
                    * Search input field
                    */
                   TextField(
-                    // onChanged: (query) {
-                    //   setState(() {
-                    //     searchResults = searchDictionary(query);
-                    //     currentSearchQuery = query;
-                    //     selectedWord = {};
-                    //   });
-                    // },
                     controller: _searchController,
                     style: const TextStyle(
                       color: Colors.black,

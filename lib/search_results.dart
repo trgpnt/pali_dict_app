@@ -31,7 +31,10 @@ class SearchResults extends StatelessWidget {
 
   Widget _buildListItem(BuildContext context, Map<String, String> result) {
     return ListTile(
-      title: Text(result['word'] ?? ''),
+      title: Text(
+        result['word'] ?? '',
+        style: const TextStyle(fontSize: 17),
+      ),
       onTap: () {
         onTap(result);
       },
