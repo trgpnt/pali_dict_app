@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-import '../dictionary_app.dart';
-import '../loading_screen.dart';
+import 'dictionary_app.dart';
+import 'loading_screen.dart';
 
 void main() {
   runApp(MyApp());
@@ -48,6 +48,7 @@ class _DictionaryHomePageState extends State<DictionaryHomePage> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      theme: ThemeData(scaffoldBackgroundColor: Colors.yellow.shade200),
       debugShowCheckedModeBanner: false,
       home: Scaffold(
         appBar: AppBar(
@@ -69,7 +70,7 @@ class _DictionaryHomePageState extends State<DictionaryHomePage> {
             ),
           ),
         ),
-        body: DictionaryApp(),
+        body: const DictionaryApp(),
       ),
     );
   }

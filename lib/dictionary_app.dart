@@ -1,5 +1,5 @@
 import 'package:dict_app/service_layer/dictionary_read_service.dart';
-import 'package:dict_app/word_details_widget.dart';
+import 'package:dict_app/widget/word_details_widget.dart';
 import 'package:flutter/material.dart';
 
 import 'search_results.dart';
@@ -92,7 +92,6 @@ class _DictionaryAppState extends State<DictionaryApp> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: Colors.yellow,
       child: Scaffold(
         body: Padding(
           padding: const EdgeInsets.all(16.0),
@@ -113,23 +112,6 @@ class _DictionaryAppState extends State<DictionaryApp> {
                         selectedWord = {};
                       });
                     },
-                    items: TranslationMode.values
-                        .where((mode) =>
-                            mode !=
-                            TranslationMode.paliToVNese) // Skip paliToVNese
-                        .map((mode) {
-                      return DropdownMenuItem<TranslationMode>(
-                        value: mode,
-                        child: Text(
-                          mode == TranslationMode.paliToEnglish
-                              ? 'Pali to English / Vietnamese'
-                              : 'English to Pali',
-                          style: const TextStyle(
-                            color: Colors.black87,
-                          ),
-                        ),
-                      );
-                    }).toList(),
                     decoration: InputDecoration(
                       labelText: 'Translation Mode',
                       labelStyle: const TextStyle(color: Colors.red),
@@ -151,6 +133,23 @@ class _DictionaryAppState extends State<DictionaryApp> {
                         borderRadius: BorderRadius.circular(12.0),
                       ),
                     ),
+                    items: TranslationMode.values
+                        .where((mode) =>
+                            mode !=
+                            TranslationMode.paliToVNese) // Skip paliToVNese
+                        .map((mode) {
+                      return DropdownMenuItem<TranslationMode>(
+                        value: mode,
+                        child: Text(
+                          mode == TranslationMode.paliToEnglish
+                              ? 'Pali to English / Vietnamese'
+                              : 'English to Pali',
+                          style: const TextStyle(
+                            color: Colors.black87,
+                          ),
+                        ),
+                      );
+                    }).toList(),
                   ),
                   const SizedBox(
                     height: 16.0,
