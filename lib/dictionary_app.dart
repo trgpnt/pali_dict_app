@@ -46,25 +46,16 @@ class _DictionaryAppState extends State<DictionaryApp> {
   Future<void> loadDictionaryData() async {
     try {
       Stopwatch stopwatch = Stopwatch()..start();
-
-      List<Future<List<Map<String, String>>>> loadingFutures = [
-        _dictionaryReadService.loadDictionary(
-            'assets/english-pali_Ven_A_P_Buddhadatta-2.4.2.txt'),
-        _dictionaryReadService.loadDictionary(
-            'assets/pali-english_Ven_A_P_Buddhadatta-2.4.2.txt'),
-        _dictionaryReadService.loadDictionary('assets/conbimed_pali_vnese.txt'),
-      ];
-
-      List<List<Map<String, String>>> results =
-          await Future.wait(loadingFutures);
-
-      // Assigning loaded dictionaries to dictionaryData
-      dictionaryData[TranslationMode.englishToPali] = results[0];
-      dictionaryData[TranslationMode.paliToEnglish] = results[1];
-      dictionaryData[TranslationMode.paliToVNese] = results[2];
-
+      dictionaryData[TranslationMode.englishToPali] =
+          await _dictionaryReadService.loadDictionary(
+              'assets/english-pali_Ven_A_P_Buddhadatta-2.4.2.txt');
+      dictionaryData[TranslationMode.paliToEnglish] =
+          await _dictionaryReadService.loadDictionary(
+              'assets/pali-english_Ven_A_P_Buddhadatta-2.4.2.txt');
+      dictionaryData[TranslationMode.paliToVNese] = await _dictionaryReadService
+          .loadDictionary('assets/conbimed_pali_vnese.txt');
       print(
-          'Finished loading in ${stopwatch.elapsed.inMilliseconds} milliseconds');
+          'Finished loading in ${stopwatch.elapsed.inMilliseconds} miliseconds');
     } catch (e) {
       print('Error loading dictionary data: $e');
     }
