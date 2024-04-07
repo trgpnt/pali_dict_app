@@ -246,8 +246,8 @@ class _DictionaryAppState extends State<DictionaryApp> {
                         child: SearchResults(
                           searchResults: searchResults,
                           onTap: (wordDetails) {
+                            _searchController.text = wordDetails['word'] ?? '';
                             setState(() {
-                              _searchController.clear();
                               selectedWord = wordDetails;
                               searchResults = [];
                             });
