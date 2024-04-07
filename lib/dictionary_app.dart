@@ -31,7 +31,7 @@ class _DictionaryAppState extends State<DictionaryApp> {
     _searchController.addListener(() {
       setState(() {
         currentSearchQuery = _searchController.text;
-        searchResults = searchDictionary(currentSearchQuery);
+        searchResults = searchDictionary(currentSearchQuery.trim());
         selectedWord = {};
       });
     });
@@ -159,7 +159,7 @@ class _DictionaryAppState extends State<DictionaryApp> {
                               ? 'Pali to English / Vietnamese'
                               : 'English to Pali',
                           style: const TextStyle(
-                              color: Colors.black87, fontSize: 20),
+                              color: Colors.black87, fontSize: 16),
                         ),
                       );
                     }).toList(),
@@ -181,7 +181,7 @@ class _DictionaryAppState extends State<DictionaryApp> {
                           ? 'Enter English word'
                           : 'Enter Pali word',
                       hintStyle:
-                          const TextStyle(color: Colors.black87, fontSize: 20),
+                          const TextStyle(color: Colors.black87, fontSize: 16),
                       suffixIcon: currentSearchQuery.isNotEmpty
                           ? IconButton(
                               icon: const Icon(
