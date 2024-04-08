@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:dict_app/service_layer/dictionary_load_service.dart';
 import 'package:dict_app/widget/word_details_widget.dart';
 import 'package:flutter/material.dart';
@@ -21,6 +23,28 @@ class _DictionaryAppState extends State<DictionaryApp> {
   String currentSearchQuery = '';
   final DictionaryLoadService _dictionaryReadService = DictionaryLoadService();
   final TextEditingController _searchController = TextEditingController();
+  final Map<String, String> diacriticsMap = {
+    'ā': 'a',
+    'ī': 'i',
+    'ū': 'u',
+    'ṅ': 'n',
+    'ñ': 'n',
+    'ṃ': 'm',
+    'ṭ': 't',
+    'ḍ': 'd',
+    'ṇ': 'n',
+    'ḷ': 'l',
+  };
+  final Map<String, String> equivalences = {
+    'a': 'aā',
+    'i': 'iī',
+    'u': 'uū',
+    'n': 'nṅñṇ',
+    'm': 'mṃ',
+    't': 'tṭ',
+    'd': 'dḍ',
+    'l': 'lḷ',
+  };
 
   @override
   void initState() {
@@ -61,36 +85,96 @@ class _DictionaryAppState extends State<DictionaryApp> {
     }
   }
 
+  List<String> _generateCombinations(String query) {
+    final Map<int, List<String>> combinationsMap = {
+      0: [query]
+    };
+    final Set<String> visited = {
+      query
+    }; // Track visited combinations to avoid duplicates
+    final List<String> chars = query.split('');
+    for (final char in chars) {
+      if (!equivalences.containsKey(char)) {
+        continue; // Skip if the character has no equivalents
+      }
+      final String equiv = equivalences[char]!;
+      final List<String> newCombinations = [];
+      for (final entry in combinationsMap.entries) {
+        final int index = entry.key;
+        final List<String> combos = entry.value;
+        for (final combo in combos) {
+          final newCombo = combo.replaceRange(index, index + 1, equiv);
+          if (!visited.contains(newCombo)) {
+            newCombinations.add(newCombo);
+            visited.add(newCombo);
+          }
+        }
+      }
+      combinationsMap.addAll(newCombinations
+          .asMap()
+          .map((index, combo) => MapEntry(index + 1, [combo])));
+    }
+    return combinationsMap.values
+        .expand((combinations) => combinations)
+        .toList();
+  }
+
   List<Map<String, String>> searchDictionary(String query) {
-    final lowercasedQuery = query.toLowerCase();
+    if (query.isEmpty) {
+      return [];
+    }
+
+    final String processedQuery = removeDiacritics(query.toLowerCase());
+
+    // Generate combinations and convert to lowercase
+    final List<String> combinations = _generateCombinations(processedQuery);
+    final Set<String> lowercasedQueries = Set.from(
+        combinations.map((combo) => removeDiacritics(combo.toLowerCase())));
+
+    // Filter matching entries from dictionary
     final List<Map<String, String>> allEntries =
         dictionaryData[currentMode] ?? [];
+    final List<Map<String, String>> matchingEntries = [];
+    for (final entry in allEntries) {
+      final String word = removeDiacritics(entry['word']?.toLowerCase() ?? '');
+      if (lowercasedQueries.any((query) => word.startsWith(query))) {
+        matchingEntries.add(entry);
+      }
+    }
 
-    List<Map<String, String>> matchingEntries = allEntries
-        .where((entry) =>
-            entry['word']?.toLowerCase().startsWith(lowercasedQuery) == true)
-        .toList();
-
+    // Sort and return matching entries
     if (matchingEntries.isNotEmpty &&
         currentMode != TranslationMode.paliToVNese) {
       matchingEntries
           .sort((a, b) => a['word']!.length.compareTo(b['word']!.length));
-
       return matchingEntries;
     }
 
     // If no results found and current mode is paliToVNese, perform additional search
     final List<Map<String, String>> additionalSearch =
         dictionaryData[TranslationMode.paliToVNese] ?? [];
+    final List<Map<String, String>> additionalMatches = [];
+    for (final entry in additionalSearch) {
+      final String word = removeDiacritics(entry['word']?.toLowerCase() ?? '');
+      if (lowercasedQueries.any((query) => word.startsWith(query))) {
+        additionalMatches.add(entry);
+      }
+    }
 
-    List<Map<String, String>> additionalMatches = additionalSearch
-        .where((entry) =>
-            entry['word']?.toLowerCase().startsWith(lowercasedQuery) == true)
-        .toList();
-    additionalMatches
-        .sort((a, b) => a['word']!.length.compareTo(b['word']!.length));
+    // Sort additional matching entries
+    if (additionalMatches.isNotEmpty) {
+      additionalMatches
+          .sort((a, b) => a['word']!.length.compareTo(b['word']!.length));
+    }
 
     return additionalMatches;
+  }
+
+  String removeDiacritics(String input) {
+    return input.replaceAllMapped(
+      RegExp('[${diacriticsMap.keys.join()}]'),
+      (match) => diacriticsMap[match.group(0)]!,
+    );
   }
 
   @override

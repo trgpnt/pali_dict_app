@@ -48,29 +48,4 @@ class DictionaryLoadService {
       return [];
     }
   }
-
-  Future<List<Map<String, String>>> _processLines(List<String> lines) async {
-    List<Map<String, String>> entries = [];
-    String currentEntry = '';
-
-    for (String line in lines) {
-      if (line.contains('\t')) {
-        final List<String> parts = line.split('\t');
-        if (parts.length == 2) {
-          entries.add({'word': parts[0], 'meaning': parts[1]});
-        }
-      } else if (line.trim() == '.') {
-        if (currentEntry.isNotEmpty) {
-          final List<String> parts = currentEntry.split('\t');
-          if (parts.length == 2) {
-            entries.add({'word': parts[0], 'meaning': parts[1]});
-          }
-        }
-        currentEntry = '';
-      } else {
-        currentEntry += line;
-      }
-    }
-    return entries;
-  }
 }
