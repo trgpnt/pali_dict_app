@@ -126,6 +126,24 @@ class _DictionaryAppState extends State<DictionaryApp> {
 
     final String processedQuery = removeDiacritics(query.toLowerCase());
 
+    if (currentMode == TranslationMode.englishToPali) {
+      // Filter matching entries from dictionary based on English word
+      final List<Map<String, String>> allEntries =
+          dictionaryData[currentMode] ?? [];
+      final matchingEntries = allEntries.where((entry) {
+        final String word =
+            removeDiacritics(entry['word']?.toLowerCase() ?? '');
+        return word.startsWith(processedQuery);
+      }).toList();
+
+      // Sort and return matching entries
+      if (matchingEntries.isNotEmpty) {
+        matchingEntries
+            .sort((a, b) => a['word']!.length.compareTo(b['word']!.length));
+      }
+      return matchingEntries;
+    }
+
     // Generate combinations and convert to lowercase
     final List<String> combinations = _generateCombinations(processedQuery);
     final Set<String> lowercasedQueries = Set.from(
